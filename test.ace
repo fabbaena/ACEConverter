@@ -1,0 +1,33 @@
+rserver redirect ADVISORY-QA-W12-HTTP-REDIRECT
+  description ADVISORY-QA-W12 redirect server
+  webhost-redirection https://advisory-qa-w12.ey.net%p
+  inservice
+probe http HTTP-Test
+  port 80
+  expect status 200 200
+  request method get url /test/application
+  ip address 10.1.1.1
+  port 80
+  header Accept-Encoding header-value gzip
+  header Host header-value www.google.com
+probe snmp SNMP-test
+  port 514
+  open 5
+  oid 1.1.1.1.1
+    threshold 1
+    weight 10
+  oid 1.2.1.2.1
+    threshold 2
+    weight 20
+aaa group server tacacs+ TacServer
+  server 1.1.1.1
+  deadtime 50
+  attribute user-profile fabianup
+  baseDN "asdfasdfasdf" 
+  filter search-user "fabianfabian"
+  no shutdown
+aaa group server tacacs+ fabian
+  server 2.2.2.2
+aaa accounting default group asdf local none
+aaa authentication login error-enable
+aaa authentication login console group TacServer local
